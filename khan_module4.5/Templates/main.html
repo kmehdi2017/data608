@@ -1,0 +1,112 @@
+﻿
+<head>
+<meta content="en-us" http-equiv="Content-Language" />
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+
+    
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<title>Data 608, Fall 2018</title>
+
+<style type="text/css">
+.lblmsg {
+            color:#f22f0c;
+            font-size:x-large;
+        }              
+              
+.lblsym {
+            color: #800000;
+            font-size:large;
+
+        }
+ .lbltop {
+            color: #800000;
+            font-size:medium;
+
+        }
+
+  
+ table.statTable {
+  border: 2px solid #FFFFFF;
+  width: 700px;
+  text-align: center;
+  border-collapse: collapse;
+}
+table.statTable td, table.statTable th {
+  border: 1px solid #FFFFFF;
+  padding: 3px 4px;
+  text-align:left;
+  font-weight:bold;
+}
+table.statTable tbody td {
+  font-size: 13px;
+}
+table.statTable td:nth-child(even) {
+  background: #EBEBEB;
+}
+table.statTable thead {
+  background: #FFFFFF;
+  border-bottom: 4px solid #333333;
+}
+table.statTable thead th {
+  font-size: 15px;
+  font-weight: bold;
+  color: #992817;
+  text-align: center;
+  border-left: 2px solid #333333;
+}
+table.statTable thead th:first-child {
+  border-left: none;
+}
+
+table.statTable tfoot {
+  font-size: 10px;
+  font-weight: normal;
+  border-top: 4px solid #333333;
+}
+table.statTable tfoot td {
+  font-size: 10px;
+}
+
+
+ 
+</style>
+</head>
+
+  
+  
+	
+	<div align="center">
+	<br><br>
+	<label class="lbltop"><strong></strong>Data 608 || Fall 2018 || Module 4.5 <br>Mehdi Khan </strong></strong></label><br><br>	<label class="lblmsg">!! WELCOME !!</label><br>
+	    <span style="width:600px">
+	    <p >
+		This is a flask based webpage that display data from the New York City tree census based on the user
+		 supplied borough names as variables from the URL.
+		  </p>
+		<p >
+		Example: localhost:5000/boroname/&lt;string:borough_name&gt; <br> The 
+		"&lt;string:borough_name&gt;" needs to be replaced by one of the borough 
+		names listed below</p>
+		
+	    
+		<label class="lblsym">The following borough names can 
+		be entered at the url: </strong></strong></label><br><br>Queens,<br> Brooklyn,<br> Manhattan,<br> Staten Island,<br> Bronx</span><div align="center">
+             <br><br>
+                <label style="font-size:large; class="lbltop">{{msg}}</label><br>
+                <label style="font-size:x-large;font-weight:bold">{{boro}}</label>
+                <br>
+                {{tbl|safe}}
+                <br>
+                <!--label style="font-size:large;font-weight:bold">{{txtStat2}}</label-->     
+ 			</div>
+
+	</div>
+ 
+
