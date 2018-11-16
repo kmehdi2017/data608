@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>Data 608, project 5</title>
+    <style>
+            table {
+                border-collapse: collapse;
+                border: 2px black solid;
+                font: 12px sans-serif;
+            }
+
+            td, th {
+                border: 1px black solid;
+                padding: 5px;
+            }
+
+            th {
+                font-weight: bold;
+            }
+        
+        .left{
+            width:48%;
+            float:left;
+            height:100%;
+            }
+
+         .right{
+            margin-left:52%;
+            height:auto;
+        }
+
+        
+
+        </style>
+</head>
+ <script src="https://d3js.org/d3.v5.min.js"></script>
+ <script>
+
+ // DATA 608, PROJECT 5, FALL 2018
+ // Author: Mehdi Khan
+
+// CODES AND FUNCTIONS FOR PROBLEM TWO
+     // loading the csv and presenting data in a table
+    d3.csv("./data/presidents.csv").then(function (data) {    
+        var tbl = d3.select("#divtbl").append("table")  // creating a table element   
+        //first row with the headers 
+        tbl.append("tr")
+            .selectAll("th")  
+            .data(data.columns)
+               .enter()
+                .append("th")
+                  .text(function(d){
+                    return d;
+          })
+          
+         
+        // creating other rows and cells 
+        tbl.selectAll("tr")             
+          .data(data).enter()
+          .append("tr")          
+            .selectAll("td")
+              .data(function(row){                   
+                   return data.columns.map(function(d){              
+                      return row[d]
+                        });                           
+            }).enter()
+                .append("td")
+                  .text(function(d){                  
+                 return d;              
+            }); 
+
+       // selecting the submit button and adding a function to it's click event
+        var btnPresident = d3.select("#btn")
+            .on("click", function () {
+                var d = data;
+                var president = d3.select("#inPresident").property("value"); 
+                var i;
+                for (i = 0; i < d.length; i++) {
+                    if (d[i].Name.toUpperCase() == president.toUpperCase()) {
+                        var x = d3.select("#sMsg").text(function () { return "The Height and Weight (in inch and lb) of President " + d[i].Name + " is: " + d[i].Height + " and " + d[i].Weight })
+                        break;
+                    } else {
+                        var x = d3.select("#sMsg").text(function () { return "Please check the president's name, it may not entered correctly"})
+                           }  
+                }
+         
+            })  
+     
+     
+      
+       // selecting the dropdown menu and adding a function to it's change event
+        var selectPresident = d3.select("#drpdn")   //.append("select") 
+         .on("change", function (d) {
+           var president = d3.select(this).property("value")
+           var x = d3.select("#sMsg").text(function () { return president; });
+        })
+       selectPresident.selectAll("option")   
+      .data(data)
+      .enter()
+      .append("option") 
+      .attr("value", function (d) { return "The Height and Weight (in inch and lb) of President " + d.Name + " is: " + d.Height + " and " + d.Weight } ) 
+      .text(function(d){
+        return d.Name;
+            }); 
+
+       });
+               
+        
+// CODES AND FUNCTIONS FOR PROBLEM TWO
+
+        // function to create a table with cell values representing the multiples of the input number
+        function createTable() {
+            var row_num= 5;
+            var cell_num = 4;
+            var num = document.getElementById('inputnum').value
+        
+            var tableDiv = document.getElementById('tbl2');        
+            var tbl = document.createElement("table");
+            tbl.setAttribute('id',"tbl1")
+            var count = 1
+            // The below statements are a combination of two loops, the first loop creates table rows
+            // and second loop creates cells and the values ( created by the next value of the count  multiplied by the input number)
+            for (var i = 0; i < row_num; i++) {
+                var table_row = document.createElement("tr");
+	           
+	        // create cells and values
+             for (var j = 0; j < cell_num; j++) {
+                var td = document.createElement("td");		
+                var cellvalue = document.createTextNode(num*count);
+                td.appendChild(cellvalue);
+                count=count+1
+                table_row.appendChild(td);
+            }           
+            
+	        tbl.appendChild(table_row); 
+        }
+            oldTable = document.getElementById('tbl1')
+            if (oldTable) {oldTable.parentNode.removeChild(oldTable)}
+            tableDiv.appendChild(tbl);
+        }
+
+        //function to reverse the input text 
+        function reverseText() {
+
+            var txt = document.getElementById('inputText').value
+            var newtxt = txt.split("").reverse().join("")
+            document.getElementById('lblReverse1').innerHTML= 'The reversed text is: '
+            document.getElementById('lblReverse').innerHTML=newtxt
+           
+        }
+    </script>
+    
+<body >
+<div align="center"  style="margin: auto;" >
+    <p><label style="font-size: large; font-weight: bold; color: #996633;">Data 608 || Fall 2018 || Project 5</label><br />
+        <label style="font-size: large; font-weight: bold; color: #996633;">Mehdi Khan</label></p>
+    <p style="color: #FF0000"><label style="font-size: x-large; color: #000000; font-weight: bold">|| PROBLEM ONE ||</label><br /> 
+        (Basic JavaScripts have been used for Problem One) </p>
+    
+    <div id="part1" class="left" style="font-size: large;">
+        Enter a text in the below text-box and click on the "Reverse Text" button to reverse the entered text:<br />
+        <p><input id="inputText" type="text" />&nbsp;&nbsp;&nbsp; <input id="btnText" type="button" value="Reverse Text" onclick="reverseText()" /></p>
+        <p><label id="lblReverse1" style="font-size: large; color: #000000"></label>
+            <label id="lblReverse" style="font-size: x-large; color: #800000"></label></p>
+    </div>
+    <div id="part2" class="right" style="font-size: large;">
+        Enter a number in the below text-box and click on the "Submit Number" button to create a 5x4 table showing the first 20 multiples of the entered number:<br />
+        <p> <input id="inputnum" type="text" />&nbsp;&nbsp;&nbsp; <input id="btnNum" type="button" value="Submit Number" onclick="createTable()" /></p>
+        <div id="tbl2"></div>
+   </div>
+    
+    <br />
+    <p style="color: #FF0000"><label style="font-size: x-large; color: #000000; font-weight: bold;">|| PROBLEM TWO ||</label><br />(D3.js  was used for Problem Two) </p>
+    <p ><label style="font-size: 20px; font-weight: normal; color: #000000" >This part loads a CSV file with a list of US presidents with their heights and weights and present them in a html table. It also provide a text box and a dropdown to type or select the name of a president, which returns the height and weight of the entered (or selected) president after submission (clicking on the associated button or changing the dropdown menu).</label><br/>  </p> 
+
+    <div id="input" align="center">
+        <label style="font-size: large; display: block;width:600px; font-weight: normal; color: #0033CC"> Note: that if the text-box is chosen, the entered name needs to be same as it is presented in the table, please click on the &#39;Find Info&quot; button after entering the name</label><br />
+        <input id="inPresident" style="width:300px; height:20px" type="text"> </input>   
+        <button id="btn" name="btnPresident" >Find Info...</button><br />
+        <p><label id="msg" style="font-family: 'Times New Roman', Times, serif; font-size: x-large; font-weight: bold; color: #000000">Or,</label></p>      
+    </div>
+    <div align="center">
+        <p><label style="font-size: large; font-weight: normal; color: #0033CC"> Select a president's name from the dropdown menu:</label> <br />
+        <select id="drpdn"></select></p>
+        <p><label id="sMsg" style="font-family: 'Times New Roman', Times, serif; font-size: x-large; font-weight: bold; color: #009933"></label></p>
+    </div>
+    <br />
+    <div id="divtbl" align="center"> </div>
+ </div>
+ </body>
+</html>
