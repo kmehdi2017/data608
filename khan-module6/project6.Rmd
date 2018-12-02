@@ -1,0 +1,59 @@
+---
+title: "project6"
+output: html_document
+author: Mehdi Khan
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+load library
+```{r}
+suppressMessages(suppressWarnings(library(ggplot2)))
+suppressMessages(suppressWarnings(library(reshape2)))
+suppressMessages(suppressWarnings(library(dplyr)))
+suppressMessages(suppressWarnings(library(tidyr)))
+suppressMessages(suppressWarnings(library(plyr)))
+
+```
+
+
+load data:
+```{r}
+dataDF <- read.csv('Joint-Malnutrition-Estimates_May_2018-2.csv',sep = ',',stringsAsFactors = FALSE, header = FALSE)
+
+head(dataDF,20)
+```
+
+As the data is a conversion to a csv file from a .xls file, it contains many rows that were entered in xls file as comments, notes and/or explanation of terms etc. So the first step was to extrcat the real data from this original csv. Apparently the 'Country and areas' in 'V2' column suggest a real column name, therefore all the rows before it will be removed and the data will be further evaluated. 
+
+removig first few rows:
+```{r}
+revisedDATA <- dataDF[which(dataDF$V2=='Country and areas'):nrow(dataDF),]
+head(revisedDATA)
+```
+
+further cleaning of data, remove unnecessary columns:
+```{r}
+revisedDATA <- subset(revisedDATA, select = c('V2','V4','V6','V10','V16','V17','V18','V19','V20','V24'))
+```
+
+First two rows contain the colums information. The first row has the most values while the second row was used to include additional information. Those information will be extracted to rename the columns. 
+
+```{r}
+columns <- as.matrix(revisedDATA[1,])[1:length(names(revisedDATA))]
+names(revisedDATA) <- columns
+names(revisedDATA)[3]<- "Region"
+revisedDATA <- plyr::rename(revisedDATA,c("Country and areas"="Country","World Bank"="WB Income Group","Year*" = "Year" ))
+
+```
+
+# remove the first two rows
+```{r}
+revisedDATA <- revisedDATA[3:nrow(revisedDATA),]
+rownames(revisedDATA)<- NULL
+write.csv(revisedDATA,"revised_malnutrition.csv")
+```
+
+

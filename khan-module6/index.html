@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>Data 608, project 5</title>
+    <style>
+            table {
+                border-collapse: collapse;
+                border: 2px black solid;
+                font: 12px sans-serif;
+            }
+
+            td, th {
+                border: 1px black solid;
+                padding: 5px;
+            }
+
+            th {
+                font-weight: bold;
+            }
+        
+        .left{
+            width:48%;
+            float:left;
+            height:100%;
+            }
+
+         .right{
+            margin-left:52%;
+            height:auto;
+        }
+
+        
+
+        .auto-style1 {
+		color: #800000;
+	}
+
+        
+
+        .auto-style2 {
+		color: #FF0000;
+	}
+
+        
+
+        .auto-style3 {
+		font-size: 20px;
+	}
+	.auto-style4 {
+		text-decoration: underline;
+	}
+	.auto-style5 {
+		color: #800000;
+		text-decoration: underline;
+	}
+	.auto-style6 {
+		font-size: 20px;
+		color: #FF00FF;
+	}
+	.auto-style7 {
+		color: #FF00FF;
+	}
+
+        
+
+        </style>
+</head>
+ <script src="https://d3js.org/d3.v5.min.js"></script>
+ <script>
+
+ // DATA 608, PROJECT 5, FALL 2018
+ // Author: Mehdi Khan
+
+// CODES AND FUNCTIONS FOR PROBLEM TWO
+     // loading the csv and presenting data in a table
+    d3.csv("./data/revised_malnutrition.csv").then(function (data) {  
+     d3.select("#divtblfilter").select("table").remove()
+     //d3.select("#divtbl").select("table").remove()  
+        var tbl = d3.select("#divtbl").append("table")  // creating a table element   
+        //first row with the headers 
+        tbl.append("tr")
+            .selectAll("th")  
+            .data(data.columns)
+               .enter()
+                .append("th")
+                  .text(function(d){
+                    return d;
+          })
+          
+         
+        // creating other rows and cells 
+        tbl.selectAll("tr")             
+          .data(data).enter()
+          .append("tr")          
+            .selectAll("td")
+              .data(function(row){                   
+                   return data.columns.map(function(d){              
+                      return row[d]
+                        });                           
+            }).enter()
+                .append("td")
+                  .text(function(d){                  
+                 return d;              
+            }); 
+                   
+       
+      function addselectCountry(regionname) {
+        d3.select("#drpdncountry").select("select").remove()
+        var selectCountry = d3.select("#drpdncountry").append("select")
+        selectCountry.append("option").attr("value",  "Select a Country").text("Select a Country")     
+         selectCountry.on("change", function (d) {
+           var region = regionname
+           var countryname = d3.select(this).property("value")
+               addtable(region,countryname);
+                      
+        })
+       var filteredData = data.filter(function(d){
+          //var region = d3.select(this).property("value")
+           return d.Region == regionname;
+          })
+       selectCountry.selectAll("option")          
+      .data(d3.map(filteredData, function(d){return d.Country;}).keys())
+      .enter()
+      .append("option") 
+      .attr("value", function (d) { return d;} ) 
+      .text(function(d){
+        return d;
+            }); 
+       }
+       
+       function addtable(regionname,country) {
+        d3.select("#divtblfilter").select("table").remove()
+         d3.select("#divtbl").select("table").remove() 
+         //d3.select("table").remove()
+         var tbl = d3.select("#divtblfilter").append("table")  // creating a table element   
+        //first row with the headers 
+        tbl.append("tr")
+            .selectAll("th")  
+            .data(data.columns)
+               .enter()
+                .append("th")
+                  .text(function(d){
+                    return d;
+          })
+          
+          var filteredData = data.filter(function(d){
+          if(country=="no"){
+            return d.Region == regionname
+          }
+          if( d.Region == regionname && d.Country == country)
+           return d;
+          })
+         
+        
+         
+        // creating other rows and cells 
+        tbl.selectAll("tr")             
+          .data(filteredData).enter()
+          .append("tr")          
+            .selectAll("td")
+              .data(function(row){                   
+                   return data.columns.map(function(d){              
+                      return row[d]
+                        });                           
+            }).enter()
+                .append("td")
+                  .text(function(d){                  
+                 return d;              
+            }); 
+        
+        
+       }
+     
+      
+       // selecting the dropdown menu and adding a function to it's change event
+        var selectCountry = d3.select("#drpdn")  //.append("select") 
+         .on("change", function (d) {
+           var region = d3.select(this).property("value")
+           //var selectedText = d3.select('#drpdn option:checked').text();           
+           var x = d3.select("#sMsg").text(function () { return "See the dropdown below for a list of countries in " + region; });
+           //addtable(region);
+           
+           addselectCountry(region)
+            addtable(region,"no")          
+        })
+               
+       selectCountry.selectAll("option")   
+      .data(d3.map(data, function(d){return d.Region;}).keys())
+      .enter()
+      .append("option") 
+      .attr("value", function (d) { return d;} ) 
+      .text(function(d){
+        return d;
+            }); 
+       
+       
+       });
+      
+
+        
+       
+    </script>
+    
+<body >
+<div align="center"  style="margin: auto;" >
+    <p><label style="font-size: large; font-weight: bold; color: #996633;">Data 
+	608 || Fall 2018 || Project 6</label><br />
+        <label style="font-size: large; font-weight: bold; color: #996633;">Mehdi Khan</label></p>
+    <br/>
+    <p style="color: #FF0000"><label style="font-size: x-large; color: #000000; font-weight: bold;">|| 
+	Experimentation with D3.js ||</label><br /> </p>
+    <p ><label style="font-size: 20px; font-weight: normal; color: #000000" >This project was meant to be 
+	the first step of the final project. While the 
+	visualizations in the final project may not utilize JavaScripts or D3, an 
+	attempt was made here to examine how selections and subsetting of dataset 
+	based on conditions are handled in D3.&nbsp; <br><br></label>
+	<span class="auto-style1">
+	<label style="font-size: 20px; font-weight: normal; " >Data source:</label></span><label style="font-size: 20px; font-weight: normal; color: #000000" > The 
+	intended datasource of the final project is&nbsp; the publicly available 
+	child malnutrition and health data in UNICEF website at
+	<a href="https://data.unicef.org/resources/dataset/malnutrition-data/">
+	https://data.unicef.org/resources/dataset/malnutrition-data/</a> . <br>The data 
+	contains information about child malnutrition in terms of various indicators 
+	<br>such as 'underweight', 'overweight' etc.&nbsp; and can be downloaded in 
+	.xslx format. 
+	<label style="font-size: 20px; font-weight: normal; " >
+	<span class="auto-style1">
+	<br><br>Data clean up and prepration: </span>T</label>he data was downloaded and 
+	converted into .csv format then was loaded in R.&nbsp; As the data is a 
+	conversion to a csv file from a .xls file, it contained many rows that were 
+	entered in .xls file as comments, notes and/or explanation of terms etc. So 
+	the first step was to extrcat the real data from this original csv. Using 
+	tools provided by R , data were further cleaned up and then finally saved 
+	again in&nbsp; .csv file format, which was consumed by D3 for this project. </label>  </p>
+	<p ><label style="font-size: 20px; font-weight: normal; color: #000000" >  
+	<label style="font-size: 20px; font-weight: normal; " >
+	<span class="auto-style5">
+	Functionalities of this project: </span></label> <br class="auto-style4">
+	 </label><span class="auto-style2">
+	<label class="auto-style3" >  
+	i.</label></span><label style="font-size: 20px; font-weight: normal; color: #000000" >&nbsp; All the data show up as a table when the page first loads. <br> </label>
+	<span class="auto-style2">
+	<label style="font-size: 20px; font-weight: normal; " >  
+	ii.</label></span><label style="font-size: 20px; font-weight: normal; color: #000000" >  
+	A dropdown is populated with all the regions that were included in the 
+	survey. Each of the regions include some specfic countries. <br>The table is 
+	modified with data of&nbsp; those countries that belong to the selected 
+	region in the dropdown. <br></label><span class="auto-style2">
+	<label class="auto-style3" >  
+	iii.</label></span><label style="font-size: 20px; font-weight: normal; color: #000000" > The the selection of a region generates another dropdown menu with the list of countries associated with the selected region 
+	giving an opportunity to see the data of a specefic country. Once a country 
+	is selected the table is further modified with data of only the selected country 
+	.</label></p>
+	<p ><span class="auto-style6">known bugs: data for some countries do not 
+	show up when the country names are selected from the dropdown</span><br class="auto-style7"/>  </p>
+
+    <!--div id="input" align="center">
+        <label style="font-size: large; display: block;width:600px; font-weight: normal; color: #0033CC"> Note: that if the text-box is chosen, the entered name needs to be same as it is presented in the table, please click on the &#39;Find Info&quot; button after entering the name</label><br />
+        <input id="inPresident" style="width:300px; height:20px" type="text"> </input>   
+        <button id="btn" name="btnPresident" >Find Info...</button><br />
+        <p><label id="msg" style="font-family: 'Times New Roman', Times, serif; font-size: x-large; font-weight: bold; color: #000000">Or,</label></p>      
+    </div-->
+    <div  align="center">
+        <p><label style="font-size: large; font-weight: normal; color: #0033CC"> Select a Region from the dropdown menu:</label> <br />
+        <select id="drpdn"><option value="volvo">Select a Region</option></select></p>
+        
+        <div  id="drpdncountry" align="center">
+        <label id="sMsg" style="font-family: 'Times New Roman', Times, serif; font-size: large; font-weight: normal; color: #009933"></label><br>
+        </div>
+        <!--br><select id="drpdncountry"></select></br-->
+        <!--svg width="600" height="600"></svg-->
+    </div>
+    <br />
+    <div id="divtblfilter" align="center"> </div>
+    <div id="divtbl" align="center"> </div>
+ </div>
+ </body>
+</html>
